@@ -1,14 +1,23 @@
+import sys
 import scrapy
+
+from intentscraper.items import IntentscraperItem
+
 
 class DmozSpider(scrapy.Spider):
     name = "intentscraper"
-    allowed_domains = ["dmoz.org"]
+    allowed_domains = ["*"]
     start_urls = [
-        "http://www.dmoz.org/Computers/Programming/Languages/Python/Books/",
-        "http://www.dmoz.org/Computers/Programming/Languages/Python/Resources/"
-    ]
+        "http://www.meridiancu.ca/Pages/welcome.aspx"
+    ]  
+
 
     def parse(self, response):
-        filename = response.url.split("/")[-2] + '.html'
-        with open(filename, 'wb') as f:
-            f.write(response.body)
+        print sys.argv
+        for sel in response.xpath('//ul/li'):
+            item = IntentscraperItem()
+            item['title'] = sel.xpath('a/text()').extract()
+            item['link'] = sel.xpath('a/@href').extract()
+            item['desc'] = sel.xpath('text()').extract()
+            yield item
+            
