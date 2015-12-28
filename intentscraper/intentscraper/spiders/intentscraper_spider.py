@@ -7,10 +7,11 @@ from intentscraper.items import IntentscraperItem
 class DmozSpider(scrapy.Spider):
     name = "intentscraper"
     allowed_domains = ["*"]
-    start_urls = [
-        "http://www.meridiancu.ca/Pages/welcome.aspx"
-    ]  
 
+    def __init__(self, *args, **kwargs):
+        super(DmozSpider, self).__init__(*args, **kwargs)
+        urls = kwargs.get('urls')
+        self.start_urls = [urls]
 
     def parse(self, response):
         print sys.argv
@@ -20,4 +21,4 @@ class DmozSpider(scrapy.Spider):
             item['link'] = sel.xpath('a/@href').extract()
             item['desc'] = sel.xpath('text()').extract()
             yield item
-            
+
