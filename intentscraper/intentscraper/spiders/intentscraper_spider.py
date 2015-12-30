@@ -1,5 +1,6 @@
 import re
 import sys
+import json
 import scrapy
 
 from intentscraper.items import IntentscraperItem
@@ -37,6 +38,7 @@ class IntentSpider(CrawlSpider):
         for n, i in enumerate(styleLinks):
             styleLinks[n] = urljoin(self.start_urls[0], i)
         data = {'url':crawledUrl,'raw':rawData, 'scripts':scriptLinks, 'styles':styleLinks, 'analysis': 'to be done later', 'tags':'to be done later'}
+        data = json.dumps(data)
         print data
         for n, i in enumerate(links):
             links[n] = urljoin(self.start_urls[0], i)
