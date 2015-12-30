@@ -8,6 +8,14 @@
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
+import os
+import sys
+
+
+sys.path.append('/home/shalini/intentaware/Scraper/scrango')
+os.environ['DJANGO_SETTINGS_MODULE'] = 'scrango.settings'
+
+
 
 BOT_NAME = 'intentscraper'
 
