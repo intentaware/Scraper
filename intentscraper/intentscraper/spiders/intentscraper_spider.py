@@ -9,6 +9,7 @@ from scrapy.selector import HtmlXPathSelector
 from scrapy.linkextractors.sgml import SgmlLinkExtractor
 from scrapy.spiders import BaseSpider, Spider
 from urlparse import urljoin
+from intentscraper.items import IntentscraperItem
 
 
 class IntentSpider(CrawlSpider):
@@ -29,7 +30,10 @@ class IntentSpider(CrawlSpider):
     def parse(self, response):
         hxs = scrapy.Selector(response)
         links = hxs.xpath("//a/@href").extract()
+        p = IntentscraperItem()
+        p['domain'] = self.allowed_domains[0]
         crawledUrl = response.url
+        p['url'] = crawledUrl
         rawData = response.body
         scriptLinks = response.xpath('//script/@src').extract()
         for n, i in enumerate(scriptLinks):
@@ -37,9 +41,11 @@ class IntentSpider(CrawlSpider):
         styleLinks = response.xpath('//link[@rel="stylesheet"]/@href').extract()
         for n, i in enumerate(styleLinks):
             styleLinks[n] = urljoin(self.start_urls[0], i)
-        data = {'url':crawledUrl,'raw':rawData, 'scripts':scriptLinks, 'styles':styleLinks, 'analysis': 'to be done later', 'tags':'to be done later'}
+        data = {'raw':rawData, 'scripts':scriptLinks, 'styles':styleLinks, 'analysis': 'to be done later', 'tags':'to be done later'}
         data = json.dumps(data)
         print data
+        p['jsondata'] = data
+        p.save()
         for n, i in enumerate(links):
             links[n] = urljoin(self.start_urls[0], i)
 
