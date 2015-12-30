@@ -7,8 +7,9 @@
 
 import scrapy
 
+from scrapy_djangoitem import DjangoItem
+from app.models import ScrapedData
 
-class IntentscraperItem(scrapy.Item):
-    title = scrapy.Field()
-    link = scrapy.Field()
-    desc = scrapy.Field()
+
+class IntentscraperItem(DjangoItem):
+    django_model = ScrapedData
