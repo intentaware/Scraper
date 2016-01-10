@@ -11,10 +11,8 @@
 import os
 import sys
 
-
-sys.path.append('/home/shalini/intentaware/Scraper/scrango')
-os.environ['DJANGO_SETTINGS_MODULE'] = 'scrango.settings'
-
+sys.path.append('/home/shalini/intentaware/Vader')
+os.environ['DJANGO_SETTINGS_MODULE'] = 'adomattic.settings.local'
 
 
 BOT_NAME = 'intentscraper'

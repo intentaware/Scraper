@@ -8,8 +8,12 @@
 import scrapy
 
 from scrapy_djangoitem import DjangoItem
-from app.models import ScrapedData
+from apps.metas.models import ScrapedData, DomainData
 
 
 class IntentscraperItem(DjangoItem):
     django_model = ScrapedData
+
+class DomainItem(DjangoItem):
+    django_model = DomainData
+

@@ -9,7 +9,7 @@ from scrapy.selector import HtmlXPathSelector
 from scrapy.linkextractors.sgml import SgmlLinkExtractor
 from scrapy.spiders import BaseSpider, Spider
 from urlparse import urljoin
-from intentscraper.items import IntentscraperItem
+from intentscraper.items import IntentscraperItem, DomainItem
 
 
 class IntentSpider(CrawlSpider):
@@ -22,6 +22,9 @@ class IntentSpider(CrawlSpider):
         super(IntentSpider, self).__init__(*args, **kwargs)
         urls = kwargs.get('urls')
         domain = kwargs.get('domain')
+        d = DomainItem()
+        d['domain'] = domain
+        self.domainObj = d.save()
         self.start_urls = [urls]
         self.allowed_domains = [domain]
         self.crawledLinks = []
@@ -31,7 +34,7 @@ class IntentSpider(CrawlSpider):
         hxs = scrapy.Selector(response)
         links = hxs.xpath("//a/@href").extract()
         p = IntentscraperItem()
-        p['domain'] = self.allowed_domains[0]
+        p['domain'] = self.domainObj
         crawledUrl = response.url
         p['url'] = crawledUrl
         rawData = response.body
@@ -43,14 +46,12 @@ class IntentSpider(CrawlSpider):
             styleLinks[n] = urljoin(self.start_urls[0], i)
         data = {'raw':rawData, 'scripts':scriptLinks, 'styles':styleLinks, 'analysis': 'to be done later', 'tags':'to be done later'}
         data = json.dumps(data)
-        print data
         p['jsondata'] = data
         p.save()
         for n, i in enumerate(links):
             links[n] = urljoin(self.start_urls[0], i)
 
         linkPattern = re.compile("^(?:ftp|http|https):\/\/(?:[\w\.\-\+]+:{0,1}[\w\.\-\+]*@)?(?:[a-z0-9\-\.]+)(?::[0-9]+)?(?:\/|\/(?:[\w#!:\.\?\+=&amp;%@!\-\/\(\)]+)|\?(?:[\w#!:\.\?\+=&amp;%@!\-\/\(\)]+))?$")
-        print('A response from %s just arrived!' % response.url)
         for link in links:
             # If it is a proper link and is not checked yet, yield it to the Spider
             if linkPattern.match(link) and not link in self.crawledLinks:
